@@ -4,9 +4,12 @@ This repository provides the supplementary material for the
 MSR paper on simulation-based testing. We will structure the
 presentation consistent with the sequential order of the
 paper. The following source code is also provided in separate
-R files to easy running.
+R files for easy running.
 
-## Original Methodology in a Nutshell (Paper section 3.1, [source code](nutshell_a.R))
+We consider this textual presentation as a more technical
+version of the content discussed in the paper.
+
+## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))
 The following R code is typical for an MSR/ESE data analysis
 methodology, using logistic regression, but highly simplified. The first part of the code loads the data.
 ```R
@@ -27,7 +30,7 @@ Next, we inspect how the model fitted the intercept and slope (later called alph
 ```R
 print(coef(model))
 ```
-The coefficients are the same as the rounded number shown in
+The coefficients are the same as the rounded numbers shown in
 the paper. They are typically shown in tabular form. The X refers to the corresponding slope.
 
 | (Intercept)   |  X            |
@@ -56,7 +59,7 @@ prob <- 1 / (1 + exp(- (alpha + beta * X)))
 ```
 We first set alpha and beta to some invented values (we 
 recommend the reader to try alternatives). Next we produce
-the corresponding probability of producing defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the results of the above arithmetic operations is also a vector. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
+the corresponding probability of defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the results of the above arithmetic operations is also a vector. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
 
 The next part simulates the final defects.
 
@@ -64,21 +67,69 @@ The next part simulates the final defects.
 set.seed(1)
 Y <- rbinom(N, size = 1, prob = prob)
 ```
-We first set the seed in that the generated random number keep the same. Then we draw N random defect classifications
+We first set the seed so that the generated random number keep the same. Then we draw N random defect classifications
 from a binomial distribution, with a single trial (size = 1). Since the
 random number generator rbinom is also vectorized, we can pass it the vector of probabilities, and produce a defect
 corresponding to the probabilities produced by the individual X entries.
 
-We finally run the original model again, but with the synthetic data.
+We finally run the original model again, but with the synthetic data instead.
 ```R
 model <- glm(Y ~ X, family = binomial())
 print(coef(model))
 ```
 The results of this code are shown in the next table.
-The results correspond to alpha and beta, as we have set them 
-in the previous substitution code. We recommend that the reader
-tries alternatives.
+The results are almost equivalent to the alpha and beta set 
+in the previous substitution code. We recommend that the
+reader explores alternatives.
 
 | (Intercept)   |  X            |
 | ------------- |:-------------:|
 |  -2.9709721   | 0.3936837     |
+
+## Uncertainty (Paper section 3.4.2, [source code](nutshell_uncertainty.R))
+
+We now explore how uncertain the identified alpha and
+beta are, as the previous example show that synthetic
+and identified are not the same.
+
+The following code runs the previous code with different
+seeds and collects the identified coefficients in the results table
+```R
+results <- NULL
+for (seed in 0:100) {
+    set.seed(seed)
+
+    alpha <- -3.0
+    beta <- 0.4
+    prob <- 1 / (1 + exp(-(alpha + beta * X)))
+    Y <- rbinom(N, size = 1, prob = prob)
+    model <- glm(Y ~ X, family = binomial())
+
+    results <- rbind(results, coef(model))
+}
+```
+We see a simple loop, iterating and setting different seeds while
+running the code from the previous section.
+Identified alpha
+and beta are stored in a two column matrix (results) for each simulation run, using rbind.
+
+We may now plot the alphas and betas from the matrix in terms of two histograms.
+```R
+par(mfrow = c(1, 2))
+hist(results[, 1], 
+     breaks = 20, 
+     main = "Identified Intercepts (alpha)", 
+     xlab = "")
+hist(results[, 2], 
+    breaks = 20, 
+    main = "Identified Slopes (beta)", 
+    xlab = "")
+```
+The following plots will show up showing the different identified alphas and betas over the 100 simulation runs.
+We recommend the reader the change the number of iterations and also to limit the number of observations, by dropping some observations from X and comparing the uncertainty.
+
+![Stuff](figures/uncertainty.png)
+
+## Parametrized Tests (Paper section 3.4.3, [source code](nutshell_parameters.R))
+
+Will be continued...

@@ -7,7 +7,8 @@ paper. The following source code is also provided in separate
 R files for easy running.
 
 We consider this textual presentation as a more technical
-version of the content discussed in the paper.
+version of the content discussed in the paper. A preprint of the
+paper can be found [here](paper.pdf).
 
 ## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))
 The following R code is typical for an MSR/ESE data analysis
@@ -132,4 +133,58 @@ We recommend the reader the change the number of iterations and also to limit th
 
 ## Parametrized Tests (Paper section 3.4.3, [source code](nutshell_parameters.R))
 
-Will be continued...
+We can explore the impact of different parameters,
+by going through different combinations of synthetic alpha and beta, and storing those, and the identified alpha and beta results in a matrix.
+```R
+results <- NULL
+for (alpha in seq(-10, 10, length.out = 30)) {
+  for (beta in seq(-1, 1, length.out = 30)) {
+
+    prob <- 1 / (1 + exp(- (alpha + beta * X)))
+    Y <- rbinom(N, size = 1, prob = prob)
+    model <- glm(Y ~ X, family = binomial())
+
+    ndefects <- sum(Y)
+    results <- rbind(results, c(coef(model), alpha, beta, ndefects))
+  }
+}
+```
+The first part of the code is a nested loop to explore
+combinations. The combination of alpha and beta is used to
+produce the synthetic Y variable. Hereafter, the model is,
+used to identify alpha and beta again using the observed
+X and Y. All relevant variables, including the total number
+of defects in Y, are stored in the matrix called results.
+
+We can now take this data for a post analysis, and depict
+the important insights, mentioned in the paper.
+```R
+error <- pmin(abs(results[, 2] - results[, 4]), 1)
+```
+The code first computed the absolute different between
+the synthetic beta and the identified beta (with and upper
+limit of 1 to enable easy conversion to a color). 
+Both variables should closely correspond to each other withing a good methodology.
+
+Finally, we produce different plots to visualize the results.
+```R
+par(mfrow = c(1, 2))
+plot(results[, 3], results[, 4],
+    col = rgb(1, 0, 0, error),
+    pch = 16,
+    xlab = "alpha",
+    ylab = "beta",
+    main = "")
+
+plot(log(results[, 5]), error, 
+    xlab = "number of defects (log)")
+```
+Comparable to the paper, we plot the error for different
+synthetic alpha and beta values. We also plot the relation
+between errors and total number of defects that we also have 
+recorded.
+
+![Stuff](figures/parameters.png)
+
+## Case 1: Dependent Observations (Paper section 5, [source code](dependent.R))
+

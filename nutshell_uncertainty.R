@@ -10,7 +10,7 @@ for (seed in 0:100) {
 
     alpha <- -3.0
     beta <- 0.4
-    prob <- 1 / (1 + exp(-(alpha + beta * X)))
+    prob <- 1 / (1 + exp(- (alpha + beta * X)))
 
     Y <- rbinom(N, size = 1, prob = prob)
 

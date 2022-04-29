@@ -156,13 +156,13 @@ used to identify alpha and beta again using the observed
 X and Y. All relevant variables, including the total number
 of defects in Y, are stored in the matrix called results.
 
-We can now take this data for a post analysis, and depict
+We can now take this data for an analysis, and depict
 the important insights, mentioned in the paper.
 ```R
 error <- pmin(abs(results[, 2] - results[, 4]), 1)
 ```
-The code first computed the absolute different between
-the synthetic beta and the identified beta (with and upper
+The code first computed the absolute difference between
+the synthetic beta and the identified beta (with an upper
 limit of 1 to enable easy conversion to a color). 
 Both variables should closely correspond to each other withing a good methodology.
 

@@ -188,3 +188,6 @@ recorded.
 
 ## Case 1: Dependent Observations (Paper section 5, [source code](dependent.R))
 
+TODO (until this part is finished,
+we link to the [original material](original_material_review.zip) linked during 
+the review process)

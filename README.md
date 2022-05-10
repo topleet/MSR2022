@@ -10,6 +10,22 @@ We consider this textual presentation as a more technical
 version of the content discussed in the paper. A preprint of the
 paper can be found [here](paper.pdf).
 
+## Cases
+
+For the different cases, presented in the paper,
+we link to a more extensive documented version of the
+source code.
+Find the links below:
+
+Case  | Topic | Paper Section | Source Code
+------------- | ------------- | ------------- | -------------
+1  | Dependent Observations | Section 5| [source code](dependent.R)
+2  | Causation vs. Prediction | Section 6| [source code](causation.R)
+
+TODO (until this part is finished,
+we link to the [original material](original_material_review.zip) linked during 
+the review process)
+
 ## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))
 The following R code is typical for an MSR/ESE data analysis
 methodology, using logistic regression, but highly simplified. The first part of the code loads the data.
@@ -164,7 +180,7 @@ error <- pmin(abs(results[, 2] - results[, 4]), 1)
 The code first computed the absolute difference between
 the synthetic beta and the identified beta (with an upper
 limit of 1 to enable easy conversion to a color). 
-Both variables should closely correspond to each other withing a good methodology.
+Both variables should closely correspond to each.
 
 Finally, we produce different plots to visualize the results.
 ```R
@@ -185,9 +201,3 @@ between errors and total number of defects that we also have
 recorded.
 
 ![Stuff](figures/parameters.png)
-
-## Case 1: Dependent Observations (Paper section 5, [source code](dependent.R))
-
-TODO (until this part is finished,
-we link to the [original material](original_material_review.zip) linked during 
-the review process)

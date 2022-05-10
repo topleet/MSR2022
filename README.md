@@ -3,11 +3,11 @@
 This repository provides the supplementary material for the
 MSR paper on simulation-based testing. We will structure the
 presentation consistent with the sequential order of the
-paper. The following source code is also provided in separate
+paper. Source code is also provided in separate
 R files for easy running.
 
 We consider this textual presentation as a more technical
-version of the content discussed in the paper. A preprint of the
+version of the content discussed in the first part of the paper. A preprint of the
 paper can be found [here](paper.pdf).
 
 ## Cases
@@ -21,6 +21,8 @@ Case  | Topic | Paper Section | Source Code
 ------------- | ------------- | ------------- | -------------
 1  | Dependent Observations | Section 5| [source code](dependent.R)
 2  | Causation vs. Prediction | Section 6| [source code](causation.R)
+3  | Control of Variables | Section 7| [source code](control.R)
+4  | Correlated Variables | Section 8| [source code](correlated.R)
 
 TODO (until this part is finished,
 we link to the [original material](original_material_review.zip) linked during 

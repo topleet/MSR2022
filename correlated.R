@@ -14,8 +14,7 @@ for (sdZ in seq(0, 1, length.out = 40)) {
   # Number of observations.
   N <- 5000
 
-  # Configure correlation between Z and W by setting the sdZ randomly between 0 and 1.
-
+  # Configure correlation between Z and W by setting the sdZ between 0 and 1.
   # Simulating the relationships between W, X, Z and Y
   W <- rnorm(N, mean = 0, sd = 1)
   X <- rnorm(N, mean = -W, sd = 1)

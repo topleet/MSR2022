@@ -1,65 +1,76 @@
 # Operationalizing Threats to MSR Studies by Simulation-Based Testing (MSR2022)
 
-This repository provides the supplementary material for the
-MSR paper on simulation-based testing. We will structure the
-presentation consistent with the sequential order of the
-paper. Source code is also provided in separate
-R files for easy running.
-
+This repository provides the **supplementary material** for the
+MSR paper on simulation-based testing. We structure this
+README consistent with the sequential order of the
+paper's first part, introducing simulation-based testing. 
+The source code is also provided in **separate
+R files** to ease running.
 We consider this textual presentation as a more technical
-version of the content discussed in the first part of the paper. A preprint of the
-paper can be found [here](paper.pdf).
+version of the content.
 
-## Cases
+A **preprint** of the paper can be found [here](paper.pdf).
+The original material linked during the review process can
+be found [here](original_material_review.zip).
+The following is a more systematic presentation of the material.
 
-For the different cases, presented in the paper,
-we link to a more extensive documented version of the
-source code.
-Find the links below:
 
-Case  | Topic | Paper Section | Source Code
+The **cases** are not presented in this text to avoid an
+overlap with the paper. We provide the cases in
+terms of **extensively documented R code**.
+The code includes the simulation, the original analysis method,
+and eventually a second, revised methodology.
+Find the links to the material below.
+
+Case  | Threat | Paper Section | Source Code
 ------------- | ------------- | ------------- | -------------
 1  | Dependent Observations | Section 5| [source code](dependent.R)
 2  | Causation vs. Prediction | Section 6| [source code](causation.R)
 3  | Control of Variables | Section 7| [source code](control.R)
 4  | Correlated Variables | Section 8| [source code](correlated.R)
 
-TODO (until this part is finished,
-we link to the [original material](original_material_review.zip) linked during 
-the review process)
 
 ## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))
-The following R code is typical for an MSR/ESE data analysis
-methodology, using logistic regression, but highly simplified. The first part of the code loads the data.
+We now start with a more technical presentation to simulation-based
+testing.
+
+The following R code is highly simplified but **typical for an MSR/ESE data analysis
+methodology**. The first part of the code loads the data.
 ```R
 data <- read.csv("metrics_elasticsearch.csv")
 
 X <- log(data$linesChanged + 1)
 Y <- as.integer(data$buggy == "true")
 ```
-We borrow the data set from [Falcão et al.](https://github.com/filipefalcaos/saner-2020) We only use the amount of changed lines by a commit, which is stated-log transformed, and whether the commit is buggy or not. We store both observed variables as X and Y.
+We borrow the data set from [Falcão et al.](https://github.com/filipefalcaos/saner-2020) We only use the amount of changed lines by a commit, which is stated-log transformed, and whether the commit is buggy or not. We store both **observed variables as X and Y**.
 
-The next part of the code fits the logistic regression model.
+The next part of the code fits the **logistic regression model**.
 ```R
 model <- glm(Y ~ X, family = binomial())
 ```
-We use R's build in generalized linear model (glm), specify the relation of interest in terms of an R formula (Y ~ X), and set the output distribution to be binomial.
+We use R's build in generalized linear model (glm) to specify the relation of interest. We use the R formula (Y ~ X) and set the output distribution to be binomial.
 
-Next, we inspect how the model fitted the intercept and slope (later called alpha and beta). We ignore confidence estimates in this part of the presentation.
+Next, we **inspect the summary** of the fit in terms of the intercept and slope (later called alpha and beta). We ignore confidence estimates in this part of the presentation.
 ```R
 print(coef(model))
 ```
-The coefficients are the same as the rounded numbers shown in
-the paper. They are typically shown in tabular form. The X refers to the corresponding slope.
+The **coefficients** are the same as the rounded numbers shown in
+the paper. Studies typically show them in tabular form
+to answer research questions.
+The intercept reflects the average defect rate and the
+X column refers to the corresponding slope (i.e., the influence
+of X on defects).
 
 | (Intercept)   |  X            |
 | ------------- |:-------------:|
 | -3.2861068    | 0.4543962     |
 
+We see a positive influence of lines of code and low average defects.
+
 ## Simulation as a Substitution for Reality (Paper section 3.3, [source code](nutshell_b.R))
 We will now implement a basic simulation-based 
-test, substituting some observed and unobserved
-variables with synthetic variables.
+test, **substituting** some **observed and unobserved**
+variables **with synthetic variables**.
 
 We again load the data and do some preparations.
 ```R
@@ -67,7 +78,7 @@ data <- read.csv("metrics_elasticsearch.csv")
 X <- log(data$linesChanged + 1)
 N <- length(X)
 ```
-We load the data, extract the stated-log transformed changed lines (X), and the number of observations (N) that we have in this data set. However, this time we do not need the final defect (Y) as we will replace it by a synthetic variable.
+We load the data, extract the stated-log transformed changed lines (X), and the number of observations (N) that we have in this data set. However, this time we do not need the final **defect (Y)** as we will **replace it by a synthetic variable**.
 
 The following part is critical, as it does the substitution of
 observed and unobserved variables with synthetic variables.
@@ -76,9 +87,10 @@ alpha <- -3.0
 beta <- 0.4
 prob <- 1 / (1 + exp(- (alpha + beta * X)))
 ```
-We first set alpha and beta to some invented values (we 
-recommend the reader to try alternatives). Next we produce
-the corresponding probability of defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the results of the above arithmetic operations is also a vector. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
+We first **set alpha and beta** to some values that we make up (we 
+recommend the reader to try alternatives). Next we **produce
+the corresponding probability** of defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the results of the above arithmetic operations is also a vector. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
+We use this functional relation in revers to its typical usage.
 
 The next part simulates the final defects.
 
@@ -86,19 +98,20 @@ The next part simulates the final defects.
 set.seed(1)
 Y <- rbinom(N, size = 1, prob = prob)
 ```
-We first set the seed so that the generated random number keep the same. Then we draw N random defect classifications
-from a binomial distribution, with a single trial (size = 1). Since the
+We first set the seed so that the generated random defects keep the same. Then we **draw N random defect** classifications
+**from a binomial distribution**, with a single trial (size = 1). Since the
 random number generator rbinom is also vectorized, we can pass it the vector of probabilities, and produce a defect
 corresponding to the probabilities produced by the individual X entries.
 
-We finally run the original model again, but with the synthetic data instead.
+We finally **run the original methodology** again, not on
+the real data, but **with the synthetic data instead**.
 ```R
 model <- glm(Y ~ X, family = binomial())
 print(coef(model))
 ```
 The results of this code are shown in the next table.
-The results are almost equivalent to the alpha and beta set 
-in the previous substitution code. We recommend that the
+The **results are almost equivalent** to the alpha and beta set 
+in the previous **substitution** code. We recommend that the
 reader explores alternatives.
 
 | (Intercept)   |  X            |
@@ -107,12 +120,12 @@ reader explores alternatives.
 
 ## Uncertainty (Paper section 3.4.2, [source code](nutshell_uncertainty.R))
 
-We now explore how uncertain the identified alpha and
-beta are, as the previous example show that synthetic
-and identified are not the same.
+We now explore how **uncertain the identified alpha and
+beta are**, as the previous example show that synthetic
+and identified variables are not exactly the same.
 
-The following code runs the previous code with different
-seeds and collects the identified coefficients in the results table
+The following code runs the previous code with **different
+seeds** and collects the identified coefficients in the results table
 ```R
 results <- NULL
 for (seed in 0:100) {
@@ -132,7 +145,7 @@ running the code from the previous section.
 Identified alpha
 and beta are stored in a two column matrix (results) for each simulation run, using rbind.
 
-We may now plot the alphas and betas from the matrix in terms of two histograms.
+We may now **plot the identified** alphas and betas from the matrix in terms of two **histograms**.
 ```R
 par(mfrow = c(1, 2))
 hist(results[, 1], 
@@ -144,15 +157,20 @@ hist(results[, 2],
     main = "Identified Slopes (beta)", 
     xlab = "")
 ```
-The following plots will show up showing the different identified alphas and betas over the 100 simulation runs.
-We recommend the reader the change the number of iterations and also to limit the number of observations, by dropping some observations from X and comparing the uncertainty.
+The plot shows the identified alphas and betas over the **100 simulation runs**.
+We recommend the reader to change the number of iterations and also to limit the number of observations, by dropping some observations from X and comparing the uncertainty.
 
 ![Stuff](figures/uncertainty.png)
 
+We see that the identified variables are **close** to the corresponding
+values set in the simulation, but they are **not absolutely exact**.
+
 ## Parametrized Tests (Paper section 3.4.3, [source code](nutshell_parameters.R))
 
-We can explore the impact of different parameters,
-by going through different combinations of synthetic alpha and beta, and storing those, and the identified alpha and beta results in a matrix.
+We can **explore the impact of different alpha and beta**,
+by going through different combinations in the simulation, while
+storing synthetic and the corresponding identified alpha and beta 
+in a matrix.
 ```R
 results <- NULL
 for (alpha in seq(-10, 10, length.out = 30)) {
@@ -167,22 +185,22 @@ for (alpha in seq(-10, 10, length.out = 30)) {
   }
 }
 ```
-The first part of the code is a nested loop to explore
-combinations. The combination of alpha and beta is used to
-produce the synthetic Y variable. Hereafter, the model is,
-used to identify alpha and beta again using the observed
+The first part of the code is a **nested loop to explore
+combinations**. The combination of alpha and beta is used to
+produce the synthetic Y variable. Hereafter, the original methodology
+is, used to identify alpha and beta again using the
 X and Y. All relevant variables, including the total number
-of defects in Y, are stored in the matrix called results.
+of defects in Y, are stored in the matrix called results
+for later analysis.
 
-We can now take this data for an analysis, and depict
+We can now take this data, and extract
 the important insights, mentioned in the paper.
 ```R
 error <- pmin(abs(results[, 2] - results[, 4]), 1)
 ```
-The code first computed the absolute difference between
-the synthetic beta and the identified beta (with an upper
+The code first computed the error, i.e., the **absolute difference between
+the synthetic beta and the identified beta** (with an upper
 limit of 1 to enable easy conversion to a color). 
-Both variables should closely correspond to each.
 
 Finally, we produce different plots to visualize the results.
 ```R
@@ -203,3 +221,7 @@ between errors and total number of defects that we also have
 recorded.
 
 ![Stuff](figures/parameters.png)
+
+The left plot show that with both low or high alpha and beta,
+the error increases. The right plot indicates why (imbalance between
+defect and non-defect commits).

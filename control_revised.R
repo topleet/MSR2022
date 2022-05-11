@@ -37,7 +37,7 @@ for (i in 1:folds) {
   results <- rbind(results, data.frame(predictors = "File size + Experience", `SSE` = error3))
 
 }
-# Plot the results of the corss validation.
+# Plot the results of the cross validation.
 par(mfrow = c(1, 1), mar = c(4, 4, 1, 1))
 ggplot(results, aes(x = `SSE`, y = predictors)) +
   geom_boxplot(fill="gray") +

@@ -89,8 +89,8 @@ prob <- 1 / (1 + exp(- (alpha + beta * X)))
 ```
 We first **set alpha and beta** to some values that we make up (we 
 recommend the reader to try alternatives). Next we **produce
-the corresponding probability** of defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the results of the above arithmetic operations is also a vector. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
-We use this functional relation in revers to its typical usage.
+the corresponding probability** of defects as a function of alpha, beta and X. The code is vectorized. Since X is a vector, the result of the above arithmetic operations is a vector too. Further, we see the [inverted logistic function](https://en.wikipedia.org/wiki/Logit) (1 / (1 + exp(- x)), which is typically hidden in the internals of software packages for fitting logistic regression models.
+We use this functional relation (in revers).
 
 The next part simulates the final defects.
 
@@ -104,14 +104,14 @@ random number generator rbinom is also vectorized, we can pass it the vector of 
 corresponding to the probabilities produced by the individual X entries.
 
 We finally **run the original methodology** again, not on
-the real data, but **with the synthetic data instead**.
+the real data, but **using the synthetic data instead**.
 ```R
 model <- glm(Y ~ X, family = binomial())
 print(coef(model))
 ```
 The results of this code are shown in the next table.
 The **results are almost equivalent** to the alpha and beta set 
-in the previous **substitution** code. We recommend that the
+in the previous **simulation** code. We recommend that the
 reader explores alternatives.
 
 | (Intercept)   |  X            |

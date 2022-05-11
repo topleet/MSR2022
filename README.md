@@ -24,10 +24,10 @@ Find the links to the material below.
 
 Case  | Threat | Paper Section | Source Code
 ------------- | ------------- | ------------- | -------------
-1  | Dependent Observations | Section 5| [source code](dependent.R)
-2  | Causation vs. Prediction | Section 6| [source code](causation.R)
-3  | Control of Variables | Section 7| [source code](control.R)
-4  | Correlated Variables | Section 8| [source code](correlated.R)
+1  | Dependent Observations | Section 5| [simulation](dependent.R)
+2  | Causation vs. Prediction | Section 6| [simulation](causation.R)
+3  | Control of Variables | Section 7| [simulation](control.R) and [revised](control_revised.R)
+4  | Correlated Variables | Section 8| [simulation](correlated.R)
 
 
 ## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))

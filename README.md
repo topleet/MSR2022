@@ -1,5 +1,7 @@
 # Operationalizing Threats to MSR Studies by Simulation-Based Testing (MSR2022)
 
+** New cases for EMSE versions of this paper are already included (see the table). **
+
 This repository provides the **supplementary material** for the
 MSR paper on simulation-based testing. We structure this
 README consistent with the sequential order of the

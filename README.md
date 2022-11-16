@@ -22,12 +22,14 @@ The code includes the simulation, the original analysis method,
 and eventually a second, revised methodology.
 Find the links to the material below.
 
-Case  | Threat | Paper Section | Source Code
-------------- | ------------- | ------------- | -------------
-1  | Dependent Observations | Section 5| [simulation](dependent.R)
-2  | Causation vs. Prediction | Section 6| [simulation](causation.R)
-3  | Control of Variables | Section 7| [simulation](control.R) and [revised](control_revised.R)
-4  | Correlated Variables | Section 8| [simulation](correlated.R)
+Case  | Threat                   | Paper Section | Source Code
+------------- |--------------------------|---------------| -------------
+1  | Dependent Observations   | MSR Section 5 | [simulation](dependent.R)
+2  | Causation vs. Prediction | MSR Section 6 | [simulation](causation.R)
+3  | Control of Variables     | MSR Section 7 | [simulation](control.R) and [revised](control_revised.R)
+4  | Correlated Variables     | MSR Section 8 | [simulation](correlated.R)
+~  | Distribution             | (EMSE Review) | [simulation](distribution.R)
+~  | Randomized Experiment    | (EMSE Review) | [simulation](experiment.R)
 
 
 ## Original Methodology (Paper section 3.1, [source code](nutshell_a.R))
